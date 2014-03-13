@@ -50,6 +50,7 @@ KeyboardInputManager.prototype.listen = function () {
       }
 
       if (event.which === 32) self.restart.bind(self)(event);
+      if (event.which === 8) self.undo.bind(self)(event);
     }
   });
 
