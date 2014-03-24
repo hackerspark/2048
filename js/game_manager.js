@@ -29,6 +29,7 @@ GameManager.prototype.restart = function () {
 GameManager.prototype.undo = function () {
   this.loadSavedState();
   this.actuate();
+  this.actuator.clearMessage();
 };
 
 GameManager.prototype.saveState = function () {
