@@ -17,9 +17,8 @@ export default class GameManager {
     this.inputManager.on("restart", this.restart.bind(this));
     this.inputManager.on("undo", this.undo.bind(this));
 
-    // onStart(() => this.setup(getMatch()));
-    // ready();
-    this.setup();
+    onStart(() => this.setup(getMatch()));
+    ready();
   }
 
   // Restart the game
