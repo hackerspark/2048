@@ -1,6 +1,6 @@
 import Grid from "./grid.js";
 import Tile from "./tile.js";
-import { ready } from "./celerx.js";
+import { getMatch } from "./celerx.js";
 export default class GameManager {
   constructor(size, InputManager, Actuator, ScoreManager, BottomlessStack) {
     this.size = size; // Size of the grid
@@ -60,7 +60,8 @@ export default class GameManager {
     this.addStartTiles();
     console.log("Before ready");
     console.log(ready);
-    ready();
+    getMatch();
+
     console.log("after ready");
 
     // Update the actuator
