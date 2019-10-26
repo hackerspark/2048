@@ -59,7 +59,6 @@ export default class GameManager {
     // Add the initial tiles
     this.addStartTiles();
     console.log("Before ready");
-    console.log(ready);
     getMatch();
 
     console.log("after ready");
