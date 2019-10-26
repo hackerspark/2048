@@ -12,18 +12,14 @@ export default class KeyboardInputManager {
   }
 
   emit(event, data) {
-    var callbacks = this.events[event];
+    const callbacks = this.events[event];
     if (callbacks) {
-      callbacks.forEach(function(callback) {
-        callback(data);
-      });
+      callbacks.forEach(callback => callback(data));
     }
   }
 
   listen() {
-    var self = this;
-
-    var map = {
+    const map = {
       38: 0, // Up
       39: 1, // Right
       40: 2, // Down
@@ -38,33 +34,33 @@ export default class KeyboardInputManager {
       65: 3 // A
     };
 
-    document.addEventListener("keydown", function(event) {
-      var modifiers =
+    document.addEventListener("keydown", event => {
+      const modifiers =
         event.altKey || event.ctrlKey || event.metaKey || event.shiftKey;
-      var mapped = map[event.which];
+      const mapped = map[event.which];
 
       if (!modifiers) {
         if (mapped !== undefined) {
           event.preventDefault();
-          self.emit("move", mapped);
+          this.emit("move", mapped);
         }
 
-        if (event.which === 32) self.restart.bind(self)(event);
-        if (event.which === 8) self.undo.bind(self)(event);
+        if (event.which === 32) this.restart.bind(this)(event);
+        if (event.which === 8) this.undo.bind(this)(event);
       }
     });
 
-    var retry = document.getElementsByClassName("retry-button")[0];
+    const [retry] = document.getElementsByClassName("retry-button");
     retry.addEventListener("click", this.restart.bind(this));
 
-    var undo = document.getElementById("undo-button");
+    const undo = document.getElementById("undo-button");
     undo.addEventListener("click", this.undo.bind(this));
 
     // Listen to swipe events
     var touchStartClientX, touchStartClientY;
-    var gameContainer = document.getElementsByClassName("game-container")[0];
+    var [gameContainer] = document.getElementsByClassName("game-container");
 
-    gameContainer.addEventListener("touchstart", function(event) {
+    gameContainer.addEventListener("touchstart", event => {
       if (event.touches.length > 1) return;
 
       touchStartClientX = event.touches[0].clientX;
@@ -72,22 +68,22 @@ export default class KeyboardInputManager {
       event.preventDefault();
     });
 
-    gameContainer.addEventListener("touchmove", function(event) {
+    gameContainer.addEventListener("touchmove", event => {
       event.preventDefault();
     });
 
-    gameContainer.addEventListener("touchend", function(event) {
+    gameContainer.addEventListener("touchend", event => {
       if (event.touches.length > 0) return;
 
-      var dx = event.changedTouches[0].clientX - touchStartClientX;
-      var absDx = Math.abs(dx);
+      const dx = event.changedTouches[0].clientX - touchStartClientX;
+      const absDx = Math.abs(dx);
 
-      var dy = event.changedTouches[0].clientY - touchStartClientY;
-      var absDy = Math.abs(dy);
+      const dy = event.changedTouches[0].clientY - touchStartClientY;
+      const absDy = Math.abs(dy);
 
       if (Math.max(absDx, absDy) > 10) {
         // (right : left) : (down : up)
-        self.emit("move", absDx > absDy ? (dx > 0 ? 1 : 3) : dy > 0 ? 2 : 0);
+        this.emit("move", absDx > absDy ? (dx > 0 ? 1 : 3) : dy > 0 ? 2 : 0);
       }
     });
   }

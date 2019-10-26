@@ -6,11 +6,11 @@ export default class Grid {
   }
 
   clone() {
-    var new_grid = new Grid(this.size);
+    const new_grid = new Grid(this.size);
     new_grid.build();
 
-    for (var x = 0; x < this.size; x++) {
-      for (var y = 0; y < this.size; y++) {
+    for (let x = 0; x < this.size; x++) {
+      for (let y = 0; y < this.size; y++) {
         if (this.cells[x][y] == null) {
           new_grid.cells[x][y] = null;
         } else {
@@ -23,17 +23,17 @@ export default class Grid {
   }
 
   build() {
-    for (var x = 0; x < this.size; x++) {
-      var row = (this.cells[x] = []);
+    for (let x = 0; x < this.size; x++) {
+      let row = (this.cells[x] = []);
 
-      for (var y = 0; y < this.size; y++) {
+      for (let y = 0; y < this.size; y++) {
         row.push(null);
       }
     }
   }
 
   randomAvailableCell() {
-    var cells = this.availableCells();
+    const cells = this.availableCells();
 
     if (cells.length) {
       return cells[Math.floor(Math.random() * cells.length)];
@@ -41,9 +41,9 @@ export default class Grid {
   }
 
   availableCells() {
-    var cells = [];
+    let cells = [];
 
-    this.eachCell(function(x, y, tile) {
+    this.eachCell((x, y, tile) => {
       if (!tile) {
         cells.push({ x: x, y: y });
       }
@@ -53,8 +53,8 @@ export default class Grid {
   }
 
   eachCell(callback) {
-    for (var x = 0; x < this.size; x++) {
-      for (var y = 0; y < this.size; y++) {
+    for (let x = 0; x < this.size; x++) {
+      for (let y = 0; y < this.size; y++) {
         callback(x, y, this.cells[x][y]);
       }
     }

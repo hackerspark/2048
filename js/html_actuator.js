@@ -11,25 +11,23 @@ export default class HTMLActuator {
   }
 
   actuate(grid, metadata) {
-    var self = this;
+    window.requestAnimationFrame(() => {
+      this.clearContainer(this.tileContainer);
 
-    window.requestAnimationFrame(function() {
-      self.clearContainer(self.tileContainer);
-
-      grid.cells.forEach(function(column) {
-        column.forEach(function(cell) {
+      grid.cells.forEach(column => {
+        column.forEach(cell => {
           if (cell) {
-            self.addTile(cell);
+            this.addTile(cell);
           }
         });
       });
 
-      self.updateScore(metadata.score);
-      self.updateBestScore(metadata.bestScore);
-      self.updateUndoButton(metadata.history);
+      this.updateScore(metadata.score);
+      this.updateBestScore(metadata.bestScore);
+      this.updateUndoButton(metadata.history);
 
-      if (metadata.over) self.message(false); // You lose
-      if (metadata.won) self.message(true); // You win!
+      if (metadata.over) this.message(false); // You lose
+      if (metadata.won) this.message(true); // You win!
     });
   }
 
@@ -47,14 +45,12 @@ export default class HTMLActuator {
   }
 
   addTile(tile) {
-    var self = this;
-
-    var element = document.createElement("div");
-    var position = tile.previousPosition || {
+    const element = document.createElement("div");
+    const position = tile.previousPosition || {
       x: tile.x,
       y: tile.y
     };
-    var positionClass = this.positionClass(position);
+    const positionClass = this.positionClass(position);
 
     // We can't use classlist because it somehow glitches when replacing classes
     var classes = ["tile", "tile-" + tile.value, positionClass];
@@ -64,20 +60,20 @@ export default class HTMLActuator {
 
     if (tile.previousPosition) {
       // Make sure that the tile gets rendered in the previous position first
-      window.requestAnimationFrame(function() {
-        classes[2] = self.positionClass({
+      window.requestAnimationFrame(() => {
+        classes[2] = this.positionClass({
           x: tile.x,
           y: tile.y
         });
-        self.applyClasses(element, classes); // Update the position
+        this.applyClasses(element, classes); // Update the position
       });
     } else if (tile.mergedFrom) {
       classes.push("tile-merged");
       this.applyClasses(element, classes);
 
       // Render the tiles that merged
-      tile.mergedFrom.forEach(function(merged) {
-        self.addTile(merged);
+      tile.mergedFrom.forEach(merged => {
+        this.addTile(merged);
       });
     } else {
       classes.push("tile-new");
@@ -104,13 +100,13 @@ export default class HTMLActuator {
   updateScore(score) {
     this.clearContainer(this.scoreContainer);
 
-    var difference = score - this.score;
+    const difference = score - this.score;
     this.score = score;
 
     this.scoreContainer.textContent = this.score;
 
     if (difference > 0) {
-      var addition = document.createElement("div");
+      const addition = document.createElement("div");
       addition.classList.add("score-addition");
       addition.textContent = "+" + difference;
 
@@ -134,36 +130,12 @@ export default class HTMLActuator {
     var type = won ? "game-won" : "game-over";
     var message = won ? "You win!" : "Game over!";
     submitScore(this.score);
-    if (typeof ga !== "undefined") {
-      ga("send", "event", "game", "end", type, this.score);
-    }
 
     this.messageContainer.classList.add(type);
     this.messageContainer.getElementsByTagName("p")[0].textContent = message;
-
-    this.clearContainer(this.sharingContainer);
-    this.sharingContainer.appendChild(this.scoreTweetButton());
-    twttr.widgets.load();
   }
 
   clearMessage() {
     this.messageContainer.classList.remove("game-won", "game-over");
-  }
-
-  scoreTweetButton() {
-    var tweet = document.createElement("a");
-    tweet.classList.add("twitter-share-button");
-    tweet.setAttribute("href", "https://twitter.com/share");
-    tweet.setAttribute("data-via", "gabrielecirulli");
-    tweet.textContent = "Tweet";
-
-    var text =
-      "I scored " +
-      this.score +
-      " points at 2048, a game where you " +
-      "join numbers to score high! #2048game";
-    tweet.setAttribute("data-text", text);
-
-    return tweet;
   }
 }
