@@ -1,6 +1,6 @@
 import Grid from "./grid.js";
 import Tile from "./tile.js";
-import { getMatch } from "./celerx.js";
+import { getMatch, onStart, ready } from "./celerx.js";
 export default class GameManager {
   constructor(size, InputManager, Actuator, ScoreManager, BottomlessStack) {
     this.size = size; // Size of the grid
@@ -17,7 +17,8 @@ export default class GameManager {
     this.inputManager.on("restart", this.restart.bind(this));
     this.inputManager.on("undo", this.undo.bind(this));
 
-    this.setup();
+    onStart(() => this.setup(getMatch()));
+    ready();
   }
 
   // Restart the game
