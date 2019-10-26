@@ -1,23 +1,22 @@
-function Tile(position, value) {
-  this.x                = position.x;
-  this.y                = position.y;
-  this.value            = value || 2;
+export default class Tile {
+  constructor(position = {}, value = 2) {
+    this.x = position.x;
+    this.y = position.y;
+    this.value = value;
+    this.previousPosition = null;
+    this.mergedFrom = null;
+  }
 
-  this.previousPosition = null;
-  this.mergedFrom       = null; // Tracks tiles that merged together
+  clone() {
+    return new Tile({ x: this.x, y: this.y }, this.value);
+  }
+
+  savePosition() {
+    this.previousPosition = { x: this.x, y: this.y };
+  }
+
+  updatePosition(position = {}) {
+    this.x = position.x;
+    this.y = position.y;
+  }
 }
-
-Tile.prototype.clone = function () {
-  return new Tile ({x: this.x,
-                    y: this.y},
-                   this.value);
-};
-
-Tile.prototype.savePosition = function () {
-  this.previousPosition = { x: this.x, y: this.y };
-};
-
-Tile.prototype.updatePosition = function (position) {
-  this.x = position.x;
-  this.y = position.y;
-};
